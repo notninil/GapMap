@@ -1,0 +1,22 @@
+# Java / Spring Boot
+target/
+*.class
+*.jar
+*.log
+application-local.properties
+
+# Node / React
+node_modules/
+dist/
+build/
+
+# Secrets
+.env
+.env.*
+
+# IDEs / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
