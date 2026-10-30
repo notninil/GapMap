@@ -1,0 +1,14 @@
+**/node_modules/
+**/target/
+**/dist/
+**/data/
+.env
+*.log
+.idea/
+.vscode/
+.env.*
+!.env.example
+*.mv.db
+*.trace.db
+*.lock.db
+backend-log.txt
