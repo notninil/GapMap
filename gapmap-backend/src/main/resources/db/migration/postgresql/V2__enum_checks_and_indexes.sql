@@ -1,0 +1,35 @@
+SET search_path TO gapmap;
+
+ALTER TABLE users ADD CONSTRAINT ck_users_role CHECK (role IN ('STUDENT','TEACHER'));
+ALTER TABLE learning_gaps ADD CONSTRAINT ck_gap_type CHECK (gap_type IN ('DIRECT','ROOT','MISCONCEPTION'));
+ALTER TABLE learning_gaps ADD CONSTRAINT ck_gap_status CHECK (status IN ('PENDING','DONE','RESOLVED'));
+ALTER TABLE learning_materials ADD CONSTRAINT ck_material_type CHECK (type IN ('LESSON','PRACTICE','VIDEO','LINK'));
+ALTER TABLE questions ADD CONSTRAINT ck_question_difficulty CHECK (difficulty IN ('EASY','MEDIUM','HARD'));
+ALTER TABLE recommendations ADD CONSTRAINT ck_recommendation_status CHECK (status IN ('PENDING','DONE','RESOLVED'));
+ALTER TABLE responses ADD CONSTRAINT ck_response_confidence CHECK (confidence_level IN ('NOT_SURE','FAIRLY_SURE','VERY_SURE'));
+ALTER TABLE topic_results ADD CONSTRAINT ck_result_mastery CHECK (mastery_level IN ('STRONG','DEVELOPING','NEEDS_PRACTICE'));
+
+CREATE INDEX ix_class_teacher ON class_rooms(teacher_id);
+CREATE INDEX ix_enrollment_student ON enrollments(student_id);
+CREATE INDEX ix_topic_teacher ON topics(teacher_id);
+CREATE INDEX ix_prerequisite_topic ON topic_prerequisites(topic_id);
+CREATE INDEX ix_assessment_class ON assessments(class_room_id);
+CREATE INDEX ix_assessment_creator ON assessments(created_by_id, archived, id);
+CREATE INDEX ix_assessment_topic ON assessments(topic_id);
+CREATE INDEX ix_question_assessment ON questions(assessment_id);
+CREATE INDEX ix_question_topic ON questions(topic_id);
+CREATE INDEX ix_option_question ON question_options(question_id);
+CREATE INDEX ix_attempt_assessment ON attempts(assessment_id);
+CREATE INDEX ix_attempt_history ON attempts(student_id, submitted_at, id);
+CREATE INDEX ix_response_question ON responses(question_id);
+CREATE INDEX ix_response_option ON responses(selected_option_id);
+CREATE INDEX ix_result_topic ON topic_results(topic_id);
+CREATE INDEX ix_gap_student ON learning_gaps(student_id, id);
+CREATE INDEX ix_gap_topic ON learning_gaps(topic_id);
+CREATE INDEX ix_gap_attempt ON learning_gaps(attempt_id);
+CREATE INDEX ix_material_topic ON learning_materials(topic_id, archived, id);
+CREATE INDEX ix_recommendation_student ON recommendations(student_id, order_index, id);
+CREATE INDEX ix_recommendation_gap ON recommendations(gap_id);
+CREATE INDEX ix_recommendation_material ON recommendations(material_id);
+CREATE INDEX ix_reset_user_created ON password_reset_tokens(user_id, created_at);
+CREATE INDEX ix_reset_expiry ON password_reset_tokens(expires_at);
