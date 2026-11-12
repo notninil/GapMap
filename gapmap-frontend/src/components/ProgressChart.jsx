@@ -10,12 +10,12 @@ import {
 } from "recharts";
 import { date, percent, Empty } from "./UI";
 const colors = [
-  "#267461",
-  "#ec9a42",
-  "#7587c4",
-  "#be6d8d",
-  "#55a4a3",
-  "#9171b4",
+  "#3b82f6",
+  "#10b981",
+  "#f59e0b",
+  "#0ea5e9",
+  "#6366f1",
+  "#64748b",
 ];
 export default function ProgressChart({
   attempts = [],
@@ -36,21 +36,32 @@ export default function ProgressChart({
           <CartesianGrid
             strokeDasharray="3 5"
             vertical={false}
-            stroke="#e4e9e5"
+            stroke="#a3b1c6"
+            strokeOpacity={0.6}
           />
           <XAxis
             dataKey="name"
-            tick={{ fontSize: 11 }}
+            tick={{ fontSize: 11, fill: "#4a5568" }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
             domain={[0, 100]}
-            tick={{ fontSize: 11 }}
+            tick={{ fontSize: 11, fill: "#4a5568" }}
             axisLine={false}
             tickLine={false}
           />
-          <Tooltip formatter={(v) => percent(v)} />
+          <Tooltip
+            formatter={(v) => percent(v)}
+            contentStyle={{
+              background: "var(--base)",
+              border: "none",
+              borderRadius: 12,
+              boxShadow: "var(--raise-sm)",
+              fontSize: 12,
+              color: "var(--ink)",
+            }}
+          />
           <Legend iconType="circle" wrapperStyle={{ fontSize: 11 }} />
           {topics.map((t, i) => (
             <Line

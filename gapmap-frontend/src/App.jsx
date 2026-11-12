@@ -1,11 +1,10 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Routes,
   Route,
   Navigate,
   NavLink,
   Outlet,
-  useNavigate,
   Link,
 } from "react-router-dom";
 import {
@@ -20,11 +19,12 @@ import {
   LogOut,
   Menu,
   X,
-  ArrowUpRight,
-  GraduationCap,
 } from "lucide-react";
-import { api, errorMessage } from "./api/client";
+import { api, errorMessage, clearDrafts } from "./api/client";
+import { AuthContext, useAuth } from "./auth";
+import { Login, Register, ForgotPassword, ResetPassword } from "./pages/Auth";
 import { ErrorBox } from "./components/UI";
+import ThemeToggle from "./components/ThemeToggle";
 import {
   StudentDashboard,
   TeacherDashboard,
@@ -35,232 +35,13 @@ import {
 } from "./pages/Reports";
 import { Assessments, Quiz } from "./pages/Assessments";
 import { Topics, Materials, Classes, AssessmentEditor } from "./pages/Manage";
-const AuthContext = createContext();
-export const useAuth = () => useContext(AuthContext);
+export { useAuth };
 function Protected({ role }) {
   const { user, ready } = useAuth();
   if (!ready) return <div className="state">Opening GapMap…</div>;
   if (!user) return <Navigate to="/login" replace />;
   if (role && user.role !== role) return <Navigate to="/" replace />;
   return <Outlet />;
-}
-function AuthPage() {
-  const [register, setRegister] = useState(false),
-    [form, setForm] = useState({
-      name: "",
-      email: "",
-      password: "",
-      role: "STUDENT",
-      teacherCode: "",
-    }),
-    [error, setError] = useState(""),
-    [busy, setBusy] = useState(false);
-  const { user, setUser } = useAuth(),
-    navigate = useNavigate();
-  const [demo, setDemo] = useState(false);
-  useEffect(() => {
-    api
-      .get("/health")
-      .then((r) => setDemo(r.data.demoLogin))
-      .catch(() => {});
-  }, []);
-  async function demoSignIn(role) {
-    setBusy(true);
-    setError("");
-    try {
-      const { data } = await api.post("/auth/demo", { role });
-      setUser(data);
-      navigate("/");
-    } catch (e) {
-      setError(errorMessage(e));
-    } finally {
-      setBusy(false);
-    }
-  }
-  const update = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-  if (user) return <Navigate to="/" replace />;
-  async function submit(e) {
-    e.preventDefault();
-    setBusy(true);
-    setError("");
-    try {
-      const { data } = await api.post(
-        "/auth/" + (register ? "register" : "login"),
-        form,
-      );
-      setUser(data);
-      navigate("/");
-    } catch (e) {
-      setError(errorMessage(e));
-    } finally {
-      setBusy(false);
-    }
-  }
-  return (
-    <div className="auth-page">
-      <aside className="auth-story">
-        <Link className="brand" to="/">
-          <Waypoints />
-          <span>
-            GapMap<span className="brand-dot">.</span>
-          </span>
-        </Link>
-        <div>
-          <div className="pill">A LITTLE CLARITY. A LOT OF POSSIBILITY.</div>
-          <h1>
-            Every learning gap
-            <br />
-            is a place
-            <br />
-            <em>to grow.</em>
-          </h1>
-          <p>
-            Understand where you are. Discover what comes next. Build
-            confidence, one topic at a time.
-          </p>
-          <div className="map-art">
-            <span>
-              Variables <b>✓</b>
-            </span>
-            <i />
-            <span>
-              Loops <b>↗</b>
-            </span>
-            <i />
-            <span>
-              Arrays <b>○</b>
-            </span>
-          </div>
-        </div>
-        <small>GAPMAP / LEARNING WITH DIRECTION</small>
-      </aside>
-      <main className="auth-form">
-        <div>
-          <div className="icon-box">
-            <GraduationCap />
-          </div>
-          <p className="eyebrow">LET’S FIND YOUR NEXT STEP</p>
-          <h1>{register ? "Start your learning journey" : "Welcome back."}</h1>
-          <p className="muted">
-            {register
-              ? "Create an account to make learning more personal."
-              : "Your next breakthrough starts with a little insight."}
-          </p>
-          <form onSubmit={submit}>
-            {register && (
-              <label>
-                Full name
-                <input
-                  name="name"
-                  value={form.name}
-                  onChange={update}
-                  required
-                  maxLength={100}
-                  autoComplete="name"
-                />
-              </label>
-            )}
-            <label>
-              Email address
-              <input
-                name="email"
-                type="email"
-                value={form.email}
-                onChange={update}
-                required
-                autoComplete="email"
-                placeholder="you@example.com"
-              />
-            </label>
-            <label>
-              Password
-              <input
-                name="password"
-                type="password"
-                value={form.password}
-                onChange={update}
-                required
-                minLength={register ? 8 : undefined}
-                maxLength={72}
-                autoComplete={register ? "new-password" : "current-password"}
-                placeholder="Enter your password"
-              />
-            </label>
-            {register && (
-              <>
-                <label>
-                  I am a
-                  <select name="role" value={form.role} onChange={update}>
-                    <option value="STUDENT">Student</option>
-                    <option value="TEACHER">Teacher</option>
-                  </select>
-                </label>
-                {form.role === "TEACHER" && (
-                  <label>
-                    Teacher invitation code
-                    <input
-                      name="teacherCode"
-                      value={form.teacherCode}
-                      onChange={update}
-                      required
-                    />
-                  </label>
-                )}
-              </>
-            )}
-            <ErrorBox error={error} />
-            <button className="primary full" disabled={busy}>
-              {busy ? "Please wait…" : register ? "Create account" : "Sign in"}{" "}
-              <ArrowUpRight size={18} />
-            </button>
-          </form>
-          <p className="auth-switch">
-            {register ? "Already have an account?" : "New to GapMap?"}{" "}
-            <button
-              className="link-button"
-              onClick={() => {
-                setRegister(!register);
-                setError("");
-              }}
-            >
-              {register ? "Sign in" : "Create an account"}
-            </button>
-          </p>
-          {demo && (
-            <div className="demo-box">
-              <strong>Explore the demo</strong>
-              {demo && (
-                <div className="form-actions">
-                  <button
-                    className="secondary"
-                    disabled={busy}
-                    onClick={() => demoSignIn("STUDENT")}
-                  >
-                    Student demo
-                  </button>
-                  <button
-                    className="secondary"
-                    disabled={busy}
-                    onClick={() => demoSignIn("TEACHER")}
-                  >
-                    Teacher demo
-                  </button>
-                </div>
-              )}
-              <p>
-                Student: student1@gapmap.test
-                <br />
-                Teacher: teacher@gapmap.test
-                <br />
-                Password: GapMap123!
-              </p>
-              <small>Available when the demo profile is enabled.</small>
-            </div>
-          )}
-        </div>
-      </main>
-    </div>
-  );
 }
 function Shell() {
   const { user, setUser } = useAuth();
@@ -285,12 +66,16 @@ function Shell() {
   async function logout() {
     try {
       await api.post("/auth/logout");
-      for (const key of Object.keys(sessionStorage))
-        if (key.startsWith("gapmap-")) sessionStorage.removeItem(key);
-      setUser(null);
     } catch (e) {
-      setError(errorMessage(e));
+      // No response at all means the cookie may still be live, so stay signed in and say so.
+      // Any HTTP answer (e.g. an already-expired session) is safe to treat as signed out.
+      if (!e.response) {
+        setError(errorMessage(e));
+        return;
+      }
     }
+    clearDrafts();
+    setUser(null);
   }
   return (
     <div className="app-shell">
@@ -373,13 +158,16 @@ function Shell() {
             <span className="crumb">/</span>
             <strong>{teacher ? "Teaching & insights" : "My learning"}</strong>
           </div>
-          <span className="today">
-            {new Date().toLocaleDateString(undefined, {
-              weekday: "short",
-              month: "short",
-              day: "numeric",
-            })}
-          </span>
+          <div>
+            <ThemeToggle />
+            <span className="today">
+              {new Date().toLocaleDateString(undefined, {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+              })}
+            </span>
+          </div>
         </div>
         <main className="content">
           <Outlet />
@@ -404,8 +192,10 @@ export default function App() {
     const id = api.interceptors.response.use(
       (r) => r,
       (e) => {
-        if (e.response?.status === 401 && !e.config.url.includes("/auth/login"))
+        if (e.response?.status === 401 && !e.config.url.includes("/auth/login")) {
+          clearDrafts();
           setUser(null);
+        }
         return Promise.reject(e);
       },
     );
@@ -414,7 +204,10 @@ export default function App() {
   return (
     <AuthContext.Provider value={{ user, setUser, ready }}>
       <Routes>
-        <Route path="/login" element={<AuthPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route element={<Protected />}>
           <Route element={<Shell />}>
             <Route

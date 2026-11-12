@@ -7,7 +7,7 @@ RUN mvn -B clean package
 FROM eclipse-temurin:17-jre
 WORKDIR /app
 RUN useradd --system --uid 10001 app
-COPY --from=build /build/target/gapmap-backend-1.0.0.jar app.jar
+COPY --from=build /build/target/gapmap-1.0.0.jar app.jar
 USER app
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","app.jar"]

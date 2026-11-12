@@ -3,10 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#19594b" />
+    <meta name="theme-color" content="#e0e5ec" />
     <meta
       name="description"
       content="GapMap helps you understand learning gaps and take your next step."
+    />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("gapmap-theme");
+          if (!t)
+            t = matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          document.documentElement.dataset.theme = t;
+          if (t === "dark")
+            document
+              .querySelector('meta[name="theme-color"]')
+              .setAttribute("content", "#2a2f3a");
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
     />
     <title>GapMap · Find your next step</title>
   </head>

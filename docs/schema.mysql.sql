@@ -11,7 +11,10 @@ create table responses (correct bit not null, attempt_id bigint not null, id big
 create table topic_prerequisites (prerequisite_id bigint not null, topic_id bigint not null, primary key (prerequisite_id, topic_id)) engine=InnoDB;
 create table topic_results (score_percent float(53) not null, attempt_id bigint not null, id bigint not null auto_increment, topic_id bigint not null, mastery_level enum ('DEVELOPING','NEEDS_PRACTICE','STRONG'), primary key (id)) engine=InnoDB;
 create table topics (id bigint not null auto_increment, teacher_id bigint not null, description varchar(4000), name varchar(255), primary key (id)) engine=InnoDB;
-create table users (id bigint not null auto_increment, email varchar(255) not null, name varchar(255) not null, password_hash varchar(255) not null, role enum ('STUDENT','TEACHER') not null, primary key (id)) engine=InnoDB;
+create table users (id bigint not null auto_increment, email varchar(255) not null, name varchar(255) not null, password_hash varchar(255) not null, role enum ('STUDENT','TEACHER') not null, token_version integer, primary key (id)) engine=InnoDB;
+create table password_reset_tokens (id bigint not null auto_increment, user_id bigint not null, token_hash varchar(64) not null, created_at datetime(6) not null, expires_at datetime(6) not null, used_at datetime(6), primary key (id)) engine=InnoDB;
+alter table password_reset_tokens add constraint UK_password_reset_token_hash unique (token_hash);
+alter table password_reset_tokens add constraint FK_password_reset_user foreign key (user_id) references users (id);
 alter table attempts add constraint UK3gboojpiqog6woge3gktx3igx unique (student_id, submission_key);
 alter table class_rooms add constraint UKj5sy0gpffwng99e2csvnos6tf unique (join_code);
 alter table responses add constraint UK5brar0nrne7qcwcyeeycxa5r1 unique (attempt_id, question_id);

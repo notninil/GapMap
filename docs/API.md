@@ -9,9 +9,11 @@ Errors have `message`, with an `errors` list for Bean Validation failures. Typic
 | GET        | `/health`                           | Public health and demo-button availability                    |
 | POST       | `/auth/register`                    | Public; name, email, password, role, optional teacherCode     |
 | POST       | `/auth/login`                       | Public; email and password                                    |
+| POST       | `/auth/forgot-password`             | Public; email. Always 200 with the same message; max 3 requests/hour/account; link valid 30 min (`RESET_TOKEN_MINUTES`). Demo profile also returns `demoResetLink` |
+| POST       | `/auth/reset-password`              | Public; token, new password (8–72). Single use; signs out every existing session |
 | POST       | `/auth/demo`                        | Demo-profile only; role STUDENT or TEACHER                    |
 | GET        | `/auth/me`                          | Signed-in profile DTO                                         |
-| POST       | `/auth/logout`                      | Clear session cookie                                          |
+| POST       | `/auth/logout`                      | Public; clears the session cookie (works with an expired session)                                          |
 | GET        | `/classes`                          | Own or enrolled classes                                       |
 | POST       | `/classes`                          | Teacher; name                                                 |
 | POST       | `/classes/join`                     | Student; code                                                 |

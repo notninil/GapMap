@@ -17,7 +17,7 @@ services:
     build: ./gapmap-backend
     environment:
       DB_URL: jdbc:mysql://mysql:3306/gapmap
-      DB_USERNAME: gapmap
+      DB_USER: gapmap
       DB_PASSWORD: ${DB_PASSWORD:-gapmap_local}
       JWT_SECRET: ${JWT_SECRET:-local-demo-change-this-secret-before-production-123456789}
       FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:5173}
@@ -25,6 +25,8 @@ services:
       TEACHER_INVITE_CODE: ${TEACHER_INVITE_CODE:-GAPMAP-TEACHER}
       SEED_DATA: ${SEED_DATA:-true}
       SEED_PASSWORD: ${SEED_PASSWORD:-GapMap123!}
+      RESET_LINKS_IN_LOG: ${RESET_LINKS_IN_LOG:-true}
+      RESET_TOKEN_MINUTES: ${RESET_TOKEN_MINUTES:-30}
     depends_on:
       mysql:
         condition: service_healthy

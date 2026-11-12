@@ -25,6 +25,15 @@ dist/
 build/
 
 # Secrets
+# Local TLS material must be stored outside this repository.
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.crt
+flyway.conf
+verification-backups/
 .env
 .env.*
 
