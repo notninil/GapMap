@@ -58,3 +58,7 @@ erDiagram
 - Current gap and recommendation rows may be refreshed, but historical attempts, responses, and topic results remain intact.
 - Deleting an attempted assessment archives it. Deleting a material archives it. Referenced topics are protected by foreign keys.
 - The default schema-generation strategy is suitable for a classroom project. For ongoing production releases, replace `update` with reviewed, versioned migrations.
+
+## PostgreSQL profile
+
+The optional supabase profile uses Hibernate validation in the private gapmap schema. Flyway V1–V3 are applied separately; runtime Flyway is disabled and needs no migration credentials. H2/MySQL retain their existing schema behavior with Flyway disabled. See [POSTGRESQL.md](POSTGRESQL.md). The PostgreSQL migrations include password_reset_tokens, which is missing from the legacy table diagram above.

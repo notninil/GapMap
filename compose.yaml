@@ -17,7 +17,7 @@ services:
     build: ./gapmap-backend
     environment:
       DB_URL: jdbc:mysql://mysql:3306/gapmap
-      DB_USERNAME: gapmap
+      DB_USER: gapmap
       DB_PASSWORD: ${DB_PASSWORD:-gapmap_local}
       JWT_SECRET: ${JWT_SECRET:-local-demo-change-this-secret-before-production-123456789}
       FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:5173}
